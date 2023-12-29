@@ -4,15 +4,15 @@ import time
 
 #initialize camera
 cam = cv2.VideoCapture(0)   #0 is the intenral integrated camera
+time.sleep(1)
 
 while True:
     check, frame = cam.read()
-    # time.sleep(1)
-
+    
     cv2.imshow('Camera Video', frame)
 
+    #keyboard push button detection for 'q'
     key = cv2.waitKey(1)
-
     if key == ord('q'):
         break
 
