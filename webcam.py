@@ -52,6 +52,3 @@ while True:
 
 cam.release()
 
-
-print(check)
-print(frame)
