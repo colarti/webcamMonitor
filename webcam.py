@@ -3,6 +3,7 @@ import cv2
 import time
 from sendMessage import send_email
 from pathlib import Path
+from threading import Thread
 
 
 
@@ -55,12 +56,23 @@ while True:
         status_list.append(status)  # detecting motion or no motion
         status_list = status_list[-2:]  # just capture the last values
 
+        file_pick = None
         if status_list[0] == 1 and status_list[1] == 0: #this tracks when an object is detected then leaves the scene
             image_list = os.listdir('.\\images\\')
-            file_image = f'images\\{image_list[len(image_list)//2]}'
-            send_email(file_image)
-            delete_folder('images')
+            while file_pick not in image_list:
+                file_pick = image_list[len(image_list)//2]
+                print(f'file_pick: {file_pick}')
+
+            file_image = f'images\\{file_pick}'
+            email_thread = Thread(target=send_email, args=(file_image,))
+            email_thread.daemon = True
+            delete_thread = Thread(target=delete_folder, args=('images',))
+            delete_thread.daemon = True
             idx = 1
+
+            email_thread.start()
+            
+
 
         cv2.imshow('Camera Video', frame)
 
@@ -74,4 +86,4 @@ while True:
         break
 
 cam.release()
-
+delete_thread.start()
