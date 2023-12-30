@@ -6,7 +6,6 @@ from pathlib import Path
 from threading import Thread
 
 
-
 def delete_folder(folder):
     files = os.listdir(folder)
     for file in files:
@@ -48,6 +47,19 @@ while True:
         dilate_frame = cv2.dilate(thresh_frame, None, iterations=2)
 
         contours, chk = cv2.findContours(dilate_frame, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        day = time.strftime('%A')
+        date = time.strftime('%Y-%m-%d')
+        tm = time.strftime('%H:%M:%S')
+
+        cv2.putText(frame, text=day, org=(30,30), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1,
+                    color=(255,255,255), thickness=1, lineType=cv2.LINE_AA)
+
+        cv2.putText(frame, text=date, org=(30,50), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1,
+                    color=(255,255,0), thickness=1, lineType=cv2.LINE_AA)
+        
+        cv2.putText(frame, text=tm, org=(30,70), fontFace=cv2.FONT_HERSHEY_PLAIN, fontScale=1,
+                    color=(255,0,0), thickness=1, lineType=cv2.LINE_AA)
 
         for contour in contours:
             if cv2.contourArea(contour) < 5000:
