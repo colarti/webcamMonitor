@@ -2,6 +2,14 @@ import os
 import cv2
 import time
 from sendMessage import send_email
+from pathlib import Path
+
+
+
+def delete_folder(folder):
+    files = os.listdir(folder)
+    for file in files:
+        os.remove(f'{folder}\\{file}')
 
 
 #initialize camera
@@ -10,9 +18,18 @@ time.sleep(1)
 
 first_frame = None
 status_list = list()
+idx = 1
+
+dir = 'C:\\Users\\cmola\\OneDrive\\Documents\\Python\\55_UDemy_60MegaApps\\App9-WebcamMonitor\\webcamMonitor'
+
 while True:
     status = 0
     check, frame = cam.read()
+    os.chdir(dir)
+    file = f'{dir}\\images\\img{idx}.png'
+    # print(file)
+    
+    
     grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     grey_frame_gau = cv2.GaussianBlur(grey_frame, (11, 11), 0)
 
@@ -32,16 +49,22 @@ while True:
             rectangle = cv2.rectangle(frame, (x,y), (x+w,y+h), (0, 255, 0), 3)
             if rectangle.any():
                 status = 1
+                cv2.imwrite(file, frame)
+                idx += 1
     
         status_list.append(status)  # detecting motion or no motion
         status_list = status_list[-2:]  # just capture the last values
 
         if status_list[0] == 1 and status_list[1] == 0: #this tracks when an object is detected then leaves the scene
-            send_email(frame)
+            image_list = os.listdir('.\\images\\')
+            file_image = f'images\\{image_list[len(image_list)//2]}'
+            send_email(file_image)
+            delete_folder('images')
+            idx = 1
 
         cv2.imshow('Camera Video', frame)
 
-
+        
 
 
 
