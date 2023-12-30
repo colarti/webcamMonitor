@@ -12,6 +12,12 @@ def delete_folder(folder):
     for file in files:
         os.remove(f'{folder}\\{file}')
 
+def check_for_images():
+    if 'images' in os.listdir():
+        pass
+    else:
+        os.mkdir('images')
+
 
 #initialize camera
 cam = cv2.VideoCapture(0)   #0 is the intenral integrated camera
@@ -22,15 +28,15 @@ status_list = list()
 idx = 1
 
 dir = 'C:\\Users\\cmola\\OneDrive\\Documents\\Python\\55_UDemy_60MegaApps\\App9-WebcamMonitor\\webcamMonitor'
+os.chdir(dir)
+check_for_images()
 
 while True:
     status = 0
     check, frame = cam.read()
-    os.chdir(dir)
+    
     file = f'{dir}\\images\\img{idx}.png'
-    # print(file)
-    
-    
+
     grey_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     grey_frame_gau = cv2.GaussianBlur(grey_frame, (11, 11), 0)
 
@@ -72,13 +78,7 @@ while True:
 
             email_thread.start()
             
-
-
         cv2.imshow('Camera Video', frame)
-
-        
-
-
 
     #keyboard push button detection for 'q'
     key = cv2.waitKey(1)
